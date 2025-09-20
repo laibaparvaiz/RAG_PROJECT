@@ -1,2 +1,0 @@
-FROM phi3:mini
-PARAMETER num_ctx 2048

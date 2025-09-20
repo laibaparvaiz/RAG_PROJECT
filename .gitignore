@@ -1,18 +1,18 @@
-# Python
+#Python
 __pycache__/
 *.pyc
 /venv/
 
-# Environment Variables
+#Environment Variables
 .env
 .env.*
 .DS_Store
 
-# RAG Project-specific
+#RAG Project-specific
 /data/
 /storage/
 
-# Build/Distributions
+#Build/Distributions
 dist/
 build/
 *.egg-info/
