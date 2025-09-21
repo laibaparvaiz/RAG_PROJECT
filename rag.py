@@ -27,8 +27,10 @@ if not pdf_path.exists():
     print(f"Error: PDF file '{PDF_FILE}' not found in the '{DATA_DIR}' directory.")
     sys.exit()
 
+#Gemini API
 Settings.llm = GoogleGenAI(model="models/gemini-1.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
 
+#Embedding
 Settings.embed_model = HuggingFaceEmbedding(
     model_name="BAAI/bge-small-en-v1.5",
     device="cpu"
@@ -42,10 +44,12 @@ def get_query_engine():
 
     if not os.path.exists(STORAGE_DIR) or not os.listdir(STORAGE_DIR):
         print("Storage directory not found or is empty. Ingesting new document.")
-
+        
+        #Document Loading
         loader = PyMuPDFReader()
         documents = loader.load_data(file_path=pdf_path)
-
+        
+        #Text Spliting
         node_parser = SentenceSplitter(chunk_size=512, chunk_overlap=20)
         
         pipeline = IngestionPipeline(
@@ -56,6 +60,7 @@ def get_query_engine():
             ]
         )
         
+        #Vector Storing
         print("Ingesting document. This may take a while on a slower system...")
         try:
             nodes = pipeline.run()

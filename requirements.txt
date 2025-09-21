@@ -1,0 +1,9 @@
+llama-index
+llama-index-llms-google-genai
+llama-index-embeddings-huggingface
+llama-index-readers-file
+gradio
+torch
+pypdf
+transformers
+sentence-transformers
