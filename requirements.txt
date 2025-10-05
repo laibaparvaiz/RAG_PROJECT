@@ -1,9 +1,14 @@
-llama-index
+# Core LlamaIndex library and its integrations
+llama-index-core
 llama-index-llms-google-genai
 llama-index-embeddings-huggingface
 llama-index-readers-file
-gradio
+llama-index-postprocessor-flashrank
+
+# Underlying dependencies for the above integrations
+PyMuPDF
 torch
-pypdf
 transformers
 sentence-transformers
+gradio
+flashrank
