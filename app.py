@@ -109,19 +109,14 @@ def stream_response(message, history):
     yield "Thinking..."
 
     try:
-        # response = query_engine.query(message)
-        # full_response = str(response)
-
-        # partial = ""  # build up response progressively
-        # for token in full_response.split():
-        #     partial += token + " "
-        #     yield partial
-        streaming_response = query_engine.query(message)
+       streaming_response = query_engine.query(message)
         
-        # The first yielded value ("Thinking...") will be overwritten by the generator below.
-        # This yields tokens directly from the LLM's streaming response.
-        for token in streaming_response.response_gen:
-            yield token
+       full_response = ""
+        # Accumulate tokens and yield the cumulative string
+       for token in streaming_response.response_gen:
+            full_response += token
+            yield full_response
+        
     except Exception as e:
         error_message = f"An error occurred: {e}. Please check your LLM configuration or try a different query."
         print(error_message)
