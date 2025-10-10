@@ -35,7 +35,7 @@ Settings.llm = GoogleGenAI(model="gemini-2.5-flash", api_key=os.environ.get("GOO
 
 # Embedding
 Settings.embed_model = HuggingFaceEmbedding(
-    model_name="BAAI/bge-small-en-v1.5",
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
     device="cpu"
 )
 
@@ -90,7 +90,7 @@ def get_query_engine():
     reranker = FlashRankRerank(top_n=3)  # Initialize the reranker to return the top 5 most relevant chunks
 
     query_engine = index.as_query_engine(
-        similarity_top_k=7,  # Retrieve a larger pool of potential chunks for the reranker to choose from
+        similarity_top_k=3,  # Retrieve a larger pool of potential chunks for the reranker to choose from
         streaming=True,
         node_postprocessors=[
             reranker
@@ -135,7 +135,7 @@ demo = gr.ChatInterface(
     textbox=gr.Textbox(placeholder="Enter your question here..."),
 )
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    print("\nStarting Gradio UI...")
 #    demo.launch(share=False)
 if __name__ == "__main__":
