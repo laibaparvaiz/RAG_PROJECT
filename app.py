@@ -13,7 +13,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 from llama_index.readers.file import PyMuPDFReader
 #from llama_index.postprocessor.flashrank_rerank import FlashRankRerank
-from llama_index.postprocessors.flashrank import FlashRankRerank
+from llama_index.postprocessor.flashrank import FlashRankRerank
 
 # RAG Setup
 DATA_DIR = "./data"
