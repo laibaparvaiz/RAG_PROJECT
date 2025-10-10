@@ -4,7 +4,6 @@ llama-index-llms-google-genai
 llama-index-embeddings-huggingface
 llama-index-readers-file
 #llama-index-postprocessor-flashrank
-git+https://github.com/run-llama/llama_index.git@main#subdirectory=llama-index-postprocessor/llama-index-postprocessor-flashrank
 flashrank==0.2.10
 
 # Underlying dependencies for the above integrations
