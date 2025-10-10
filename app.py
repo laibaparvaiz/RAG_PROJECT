@@ -132,6 +132,15 @@ demo = gr.ChatInterface(
     textbox=gr.Textbox(placeholder="Enter your question here..."),
 )
 
+#if __name__ == "__main__":
+#    print("\nStarting Gradio UI...")
+#    demo.launch(share=False)
 if __name__ == "__main__":
-    print("\nStarting Gradio UI...")
-    demo.launch(share=False)
+    # Get the PORT assigned by Railway or default to 7860 for local testing
+    PORT = int(os.environ.get('PORT', 7860)) 
+    
+    # Crucial for cloud deployment: listen on all network interfaces ("0.0.0.0")
+    demo.launch(
+        server_name="0.0.0.0", 
+        server_port=PORT
+    )
