@@ -4,7 +4,8 @@ llama-index-core
 llama-index-llms-google-genai
 llama-index-embeddings-huggingface
 llama-index-readers-file
-llama-index-postprocessors-flashrank
+#llama-index-postprocessor-flashrank
+llama-index-postprocessor-flashrank-rerank==0.2.1
 flashrank==0.2.10
 
 # Underlying dependencies for the above integrations
