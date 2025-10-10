@@ -105,15 +105,22 @@ def stream_response(message, history):
     """
     Function to handle user queries and stream the response back.
     """
+    yield "Thinking..."
+
     try:
-        response = query_engine.query(message)
-        full_response = str(response)
+        # response = query_engine.query(message)
+        # full_response = str(response)
 
-        partial = ""  # build up response progressively
-        for token in full_response.split():
-            partial += token + " "
-            yield partial
-
+        # partial = ""  # build up response progressively
+        # for token in full_response.split():
+        #     partial += token + " "
+        #     yield partial
+        streaming_response = query_engine.query(message)
+        
+        # The first yielded value ("Thinking...") will be overwritten by the generator below.
+        # This yields tokens directly from the LLM's streaming response.
+        for token in streaming_response.response_gen:
+            yield token
     except Exception as e:
         error_message = f"An error occurred: {e}. Please check your LLM configuration or try a different query."
         print(error_message)
@@ -143,5 +150,5 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0", 
         server_port=PORT,
-        share=True
+        share=False
     )
