@@ -30,7 +30,8 @@ if not pdf_path.exists():
     sys.exit()
 
 # Gemini API
-Settings.llm = GoogleGenAI(model="models/gemini-1.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
+#Settings.llm = GoogleGenAI(model="models/gemini-1.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
+Settings.llm = GoogleGenAI(model="gemini-1.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
 
 # Embedding
 Settings.embed_model = HuggingFaceEmbedding(
