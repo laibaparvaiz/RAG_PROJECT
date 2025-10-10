@@ -87,10 +87,11 @@ def get_query_engine():
         print("Index loaded.")
 
     # Setting up the query engine with better parameters and a reranker
-    reranker = FlashRankRerank(top_n=5)  # Initialize the reranker to return the top 5 most relevant chunks
+    reranker = FlashRankRerank(top_n=3)  # Initialize the reranker to return the top 5 most relevant chunks
 
     query_engine = index.as_query_engine(
-        similarity_top_k=10,  # Retrieve a larger pool of potential chunks for the reranker to choose from
+        similarity_top_k=7,  # Retrieve a larger pool of potential chunks for the reranker to choose from
+        streaming=True,
         node_postprocessors=[
             reranker
         ]
