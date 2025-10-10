@@ -8,7 +8,8 @@ flashrank==0.2.10
 
 # Underlying dependencies for the above integrations
 PyMuPDF
-torch
+torch==2.3.1+cpu
+#torch
 transformers
 sentence-transformers
 gradio
