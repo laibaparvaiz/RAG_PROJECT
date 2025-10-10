@@ -9,7 +9,6 @@ llama-index-postprocessor-flashrank-rerank==0.2.1
 flashrank==0.2.10
 
 # Underlying dependencies for the above integrations
-llama-index-reader-pymupdf
 PyMuPDF
 torch==2.3.1
 #torch
