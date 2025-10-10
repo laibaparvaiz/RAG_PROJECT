@@ -142,5 +142,6 @@ if __name__ == "__main__":
     # Crucial for cloud deployment: listen on all network interfaces ("0.0.0.0")
     demo.launch(
         server_name="0.0.0.0", 
-        server_port=PORT
+        server_port=PORT,
+        share=True
     )
