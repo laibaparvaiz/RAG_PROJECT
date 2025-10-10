@@ -1,1 +1,1 @@
-web: pip install -r requirements_railway.txt && python app.py
+web: python app.py
