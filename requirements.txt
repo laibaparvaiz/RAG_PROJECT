@@ -1,19 +1,19 @@
-# Core LlamaIndex library and its integrations
---extra-index-url https://download.pytorch.org/whl/cpu
+#Core libraries for LlamaIndex RAG
 llama-index-core
 llama-index-llms-google-genai
+llama-index-embeddings-google-genai
 llama-index-embeddings-huggingface
 llama-index-readers-file
-#llama-index-postprocessor-flashrank
-llama-index-postprocessor-flashrank-rerank==0.2.1
-flashrank==0.2.10
-
-# Underlying dependencies for the above integrations
-PyMuPDF
-pydantic
-torch==2.3.1
-#torch
-transformers
-sentence-transformers
+#llama-index-postprocessor-flashrank-rerank
 gradio
+
+#Dependencies for LlamaIndex components
+#PyMuPDF for PyMuPDFReader
+pymupdf
+
+#FlashRank for FlashRankRerank
 #flashrank
+
+#PyTorch and Transformers for the BAAI/bge-small-en-v1.5 embedding model
+#torch
+#transformers

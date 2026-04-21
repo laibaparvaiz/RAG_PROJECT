@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import sys
 import gradio as gr
 from pathlib import Path
@@ -13,12 +15,13 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 from llama_index.readers.file import PyMuPDFReader
 #from llama_index.postprocessor.flashrank_rerank import FlashRankRerank
-from llama_index.postprocessor.flashrank_rerank import FlashRankRerank
+from llama_index.core.schema import Document 
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 
 # RAG Setup
 DATA_DIR = "./data"
 PDF_FILE = "prospectus.pdf"
-STORAGE_DIR = "./storage"
+STORAGE_DIR = "/tmp/storage_v2"
 
 # Creating directories if they don't exist
 Path(DATA_DIR).mkdir(exist_ok=True)
@@ -29,13 +32,23 @@ if not pdf_path.exists():
     print(f"Error: PDF file '{PDF_FILE}' not found in the '{DATA_DIR}' directory.")
     sys.exit()
 
+# check API Key status
+if os.environ.get("GOOGLE_API_KEY"):
+    print("SUCCESS: GOOGLE_API_KEY environment variable found.")
+else:
+    print("ERROR: GOOGLE_API_KEY environment variable NOT found. Please set it in your Space settings.")
+    sys.exit()
+
 # Gemini API
-#Settings.llm = GoogleGenAI(model="models/gemini-1.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
 Settings.llm = GoogleGenAI(model="gemini-2.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
 
 # Embedding
+# Settings.embed_model = HuggingFaceEmbedding(
+#     model_name="BAAI/bge-small-en-v1.5",
+#     device="cpu"
+#)
 Settings.embed_model = HuggingFaceEmbedding(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",
+    model_name="BAAI/bge-small-en-v1.5",
     device="cpu"
 )
 
@@ -50,18 +63,21 @@ def get_query_engine():
         
         # Document Loading
         loader = PyMuPDFReader()
-        documents = loader.load_data(file_path=pdf_path)
+        raw_docs = loader.load_data(file_path=pdf_path)
+        documents = []
+        for doc in raw_docs:
+            if isinstance(doc, Document):
+                documents.append(doc)
+            else:
+                # Manual safety check to ensure all items are LlamaIndex Documents
+                documents.append(Document(text=str(doc))) 
         
-        # Node Parsing
-        node_parser = SentenceWindowNodeParser(
-            window_size=3,
-            sentence_splitter=SentenceSplitter(chunk_size=512, chunk_overlap=20)
-        )
+        node_parser = SentenceSplitter(chunk_size=512, chunk_overlap=20)
         
         pipeline = IngestionPipeline(
             documents=documents,
             transformations=[
-                node_parser,
+                node_parser, 
                 Settings.embed_model
             ]
         )
@@ -86,15 +102,14 @@ def get_query_engine():
         index = load_index_from_storage(storage_context=storage_context)
         print("Index loaded.")
 
-    # Setting up the query engine with better parameters and a reranker
-    reranker = FlashRankRerank(top_n=3)  # Initialize the reranker to return the top 5 most relevant chunks
+    # Setting up the query engine
+    #reranker = FlashRankRerank(top_n=5)  # Initialize the reranker to return the top 5 most relevant chunks
 
     query_engine = index.as_query_engine(
-        similarity_top_k=3,  # Retrieve a larger pool of potential chunks for the reranker to choose from
-        streaming=True,
-        node_postprocessors=[
-            reranker
-        ]
+        similarity_top_k=5, 
+        # node_postprocessors=[
+        #     reranker
+        # ]
     )
     
     return query_engine
@@ -106,17 +121,15 @@ def stream_response(message, history):
     """
     Function to handle user queries and stream the response back.
     """
-    yield "Thinking..."
-
     try:
-       streaming_response = query_engine.query(message)
-        
-       full_response = ""
-        # Accumulate tokens and yield the cumulative string
-       for token in streaming_response.response_gen:
-            full_response += token
-            yield full_response
-        
+        response = query_engine.query(message)
+        full_response = str(response)
+
+        partial = ""  # build up response progressively
+        for token in full_response.split():
+            partial += token + " "
+            yield partial
+
     except Exception as e:
         error_message = f"An error occurred: {e}. Please check your LLM configuration or try a different query."
         print(error_message)
@@ -135,16 +148,6 @@ demo = gr.ChatInterface(
     textbox=gr.Textbox(placeholder="Enter your question here..."),
 )
 
-# if __name__ == "__main__":
-#    print("\nStarting Gradio UI...")
-#    demo.launch(share=False)
 if __name__ == "__main__":
-    # Get the PORT assigned by Railway or default to 7860 for local testing
-    PORT = int(os.environ.get('PORT', 7860)) 
-    
-    # Crucial for cloud deployment: listen on all network interfaces ("0.0.0.0")
-    demo.launch(
-        server_name="0.0.0.0", 
-        server_port=PORT,
-        share=False
-    )
+    print("\nStarting Gradio UI...")
+    demo.launch(share=False)
