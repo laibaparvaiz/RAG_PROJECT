@@ -40,7 +40,7 @@ else:
     sys.exit()
 
 # Gemini API
-Settings.llm = GoogleGenAI(model="gemini-2.5-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
+Settings.llm = GoogleGenAI(model="gemini-3.6-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
 
 # Embedding
 # Settings.embed_model = HuggingFaceEmbedding(
